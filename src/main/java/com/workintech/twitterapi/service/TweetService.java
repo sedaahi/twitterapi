@@ -14,11 +14,7 @@ public interface TweetService {
 
     TweetResponse findById(Long id);
 
-    TweetResponse updateTweet(
-            Long id,
-            TweetUpdateRequest request,
-            String email
-    );
+    TweetResponse updateTweet(Long id, TweetUpdateRequest request, String email);
 
     void deleteTweet(Long id, String email);
 }

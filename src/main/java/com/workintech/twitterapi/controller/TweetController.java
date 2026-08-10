@@ -28,11 +28,10 @@ public class TweetController {
             Authentication authentication
     ) {
 
-        TweetResponse response =
-                tweetService.createTweet(
-                        request,
-                        authentication.getName()
-                );
+        TweetResponse response = tweetService.createTweet(
+                request,
+                authentication.getName()
+        );
 
         return ResponseEntity
                 .status(HttpStatus.CREATED)
@@ -63,7 +62,6 @@ public class TweetController {
             @Valid @RequestBody TweetUpdateRequest request,
             Authentication authentication
     ) {
-
         return ResponseEntity.ok(
                 tweetService.updateTweet(
                         id,

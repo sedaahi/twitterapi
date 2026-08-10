@@ -29,10 +29,7 @@ public class TweetServiceImpl implements TweetService {
     }
 
     @Override
-    public TweetResponse createTweet(
-            TweetCreateRequest request,
-            String email
-    ) {
+    public TweetResponse createTweet(TweetCreateRequest request, String email) {
 
         User user = findUserByEmail(email);
 
@@ -48,13 +45,12 @@ public class TweetServiceImpl implements TweetService {
     @Override
     public List<TweetResponse> findByUserId(Long userId) {
 
-        userRepository.findById(userId)
-                .orElseThrow(() ->
-                        new TwitterException(
-                                "Kullanıcı bulunamadı.",
-                                HttpStatus.NOT_FOUND
-                        )
-                );
+        if (!userRepository.existsById(userId)) {
+            throw new TwitterException(
+                    "Kullanıcı bulunamadı.",
+                    HttpStatus.NOT_FOUND
+            );
+        }
 
         return tweetRepository.findByUserId(userId)
                 .stream()
@@ -79,7 +75,7 @@ public class TweetServiceImpl implements TweetService {
 
         Tweet tweet = findTweetById(id);
 
-        checkTweetOwner(tweet, email);
+        validateTweetOwner(tweet, email);
 
         tweet.setContent(request.content());
 
@@ -93,7 +89,7 @@ public class TweetServiceImpl implements TweetService {
 
         Tweet tweet = findTweetById(id);
 
-        checkTweetOwner(tweet, email);
+        validateTweetOwner(tweet, email);
 
         tweetRepository.delete(tweet);
     }
@@ -118,8 +114,7 @@ public class TweetServiceImpl implements TweetService {
                 );
     }
 
-    //update ve delete sırasında sadece tweet sahibi işlem yapabiliyor
-    private void checkTweetOwner(Tweet tweet, String email) {
+    private void validateTweetOwner(Tweet tweet, String email) {
 
         if (!tweet.getUser().getEmail().equals(email)) {
             throw new TwitterException(
@@ -131,12 +126,10 @@ public class TweetServiceImpl implements TweetService {
 
     private TweetResponse toResponse(Tweet tweet) {
 
-        User user = tweet.getUser();
-
         UserResponse userResponse = new UserResponse(
-                user.getId(),
-                user.getUsername(),
-                user.getEmail()
+                tweet.getUser().getId(),
+                tweet.getUser().getUsername(),
+                tweet.getUser().getEmail()
         );
 
         return new TweetResponse(

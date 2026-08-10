@@ -6,6 +6,7 @@ public record TweetResponse(
         Long id,
         String content,
         LocalDateTime createdAt,
-        UserResponse user
+        UserResponse user,
+        long likeCount
 ) {
 }

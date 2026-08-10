@@ -7,6 +7,7 @@ import com.workintech.twitterapi.dto.response.UserResponse;
 import com.workintech.twitterapi.entity.Tweet;
 import com.workintech.twitterapi.entity.User;
 import com.workintech.twitterapi.exception.TwitterException;
+import com.workintech.twitterapi.repository.LikeRepository;
 import com.workintech.twitterapi.repository.TweetRepository;
 import com.workintech.twitterapi.repository.UserRepository;
 import org.springframework.http.HttpStatus;
@@ -19,13 +20,16 @@ public class TweetServiceImpl implements TweetService {
 
     private final TweetRepository tweetRepository;
     private final UserRepository userRepository;
+    private final LikeRepository likeRepository;
 
     public TweetServiceImpl(
             TweetRepository tweetRepository,
-            UserRepository userRepository
+            UserRepository userRepository,
+            LikeRepository likeRepository
     ) {
         this.tweetRepository = tweetRepository;
         this.userRepository = userRepository;
+        this.likeRepository = likeRepository;
     }
 
     @Override
@@ -132,11 +136,15 @@ public class TweetServiceImpl implements TweetService {
                 tweet.getUser().getEmail()
         );
 
+        long likeCount =
+                likeRepository.countByTweetId(tweet.getId());
+
         return new TweetResponse(
                 tweet.getId(),
                 tweet.getContent(),
                 tweet.getCreatedAt(),
-                userResponse
+                userResponse,
+                likeCount
         );
     }
 }

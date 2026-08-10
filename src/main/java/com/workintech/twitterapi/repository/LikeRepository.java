@@ -10,6 +10,7 @@ public interface LikeRepository extends JpaRepository<Like, Long> {
     boolean existsByUserIdAndTweetId(Long userId, Long tweetId); //POST /like için yazdık
 
     Optional<Like> findByUserIdAndTweetId(Long userId, Long tweetId); // POST /dislike =>Çünkü dislike aslında yeni bir entity oluşturmayacak; mevcut Like kaydını bulup silecek.
+    long countByTweetId(Long tweetId);
 }
 
 /*

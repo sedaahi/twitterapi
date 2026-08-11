@@ -17,4 +17,6 @@ public interface TweetService {
     TweetResponse updateTweet(Long id, TweetUpdateRequest request, String email);
 
     void deleteTweet(Long id, String email);
+
+    List<TweetResponse> findAllTweets();
 }

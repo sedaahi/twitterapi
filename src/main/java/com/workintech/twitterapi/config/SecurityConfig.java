@@ -30,7 +30,7 @@ public class SecurityConfig {
 
         http
                 .csrf(csrf -> csrf.disable())
-
+                .cors(cors -> {})
                 /**JWT kullandığımız için uygulama stateless
                  * her request’in kendi JWT’siyle doğrulanması demek
                  *

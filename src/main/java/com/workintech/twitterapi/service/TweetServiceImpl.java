@@ -102,6 +102,15 @@ public class TweetServiceImpl implements TweetService {
         tweetRepository.delete(tweet);
     }
 
+    @Override
+    public List<TweetResponse> findAllTweets() {
+        return tweetRepository
+                .findAllByOrderByCreatedAtDesc()
+                .stream()
+                .map(this::toResponse)
+                .toList();
+    }
+
     private Tweet findTweetById(Long id) {
         return tweetRepository.findById(id)
                 .orElseThrow(() ->

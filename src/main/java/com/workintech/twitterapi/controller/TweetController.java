@@ -59,6 +59,14 @@ public class TweetController {
         );
     }
 
+    @GetMapping
+    public ResponseEntity<List<TweetResponse>> findAllTweets() {
+
+        return ResponseEntity.ok(
+                tweetService.findAllTweets()
+        );
+    }
+
     @PutMapping("/{id}")
     public ResponseEntity<TweetResponse> updateTweet(
             @PathVariable Long id,

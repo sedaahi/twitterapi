@@ -7,6 +7,7 @@ public record TweetResponse(
         String content,
         LocalDateTime createdAt,
         UserResponse user,
-        long likeCount
+        long likeCount,
+        long retweetCount
 ) {
 }

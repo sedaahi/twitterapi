@@ -47,11 +47,14 @@ public class TweetServiceImpl implements TweetService {
 
         Tweet savedTweet = tweetRepository.save(tweet);
 
-        return toResponse(savedTweet);
+        return toResponse(savedTweet, email);
     }
 
     @Override
-    public List<TweetResponse> findByUserId(Long userId) {
+    public List<TweetResponse> findByUserId(
+            Long userId,
+            String email
+    ) {
 
         if (!userRepository.existsById(userId)) {
             throw new TwitterException(
@@ -62,16 +65,19 @@ public class TweetServiceImpl implements TweetService {
 
         return tweetRepository.findByUserId(userId)
                 .stream()
-                .map(this::toResponse)
+                .map(tweet -> toResponse(tweet, email))
                 .toList();
     }
 
     @Override
-    public TweetResponse findById(Long id) {
+    public TweetResponse findById(
+            Long id,
+            String email
+    ) {
 
         Tweet tweet = findTweetById(id);
 
-        return toResponse(tweet);
+        return toResponse(tweet, email);
     }
 
     @Override
@@ -89,7 +95,7 @@ public class TweetServiceImpl implements TweetService {
 
         Tweet updatedTweet = tweetRepository.save(tweet);
 
-        return toResponse(updatedTweet);
+        return toResponse(updatedTweet, email);
     }
 
     @Override
@@ -103,11 +109,12 @@ public class TweetServiceImpl implements TweetService {
     }
 
     @Override
-    public List<TweetResponse> findAllTweets() {
+    public List<TweetResponse> findAllTweets(String email) {
+
         return tweetRepository
                 .findAllByOrderByCreatedAtDesc()
                 .stream()
-                .map(this::toResponse)
+                .map(tweet -> toResponse(tweet, email))
                 .toList();
     }
 
@@ -141,7 +148,10 @@ public class TweetServiceImpl implements TweetService {
         }
     }
 
-    private TweetResponse toResponse(Tweet tweet) {
+    private TweetResponse toResponse(
+            Tweet tweet,
+            String email
+    ) {
 
         UserResponse userResponse = new UserResponse(
                 tweet.getUser().getId(),
@@ -155,13 +165,22 @@ public class TweetServiceImpl implements TweetService {
         long retweetCount =
                 retweetRepository.countByTweetId(tweet.getId());
 
+        User currentUser = findUserByEmail(email);
+
+        boolean likedByCurrentUser =
+                likeRepository.existsByUserIdAndTweetId(
+                        currentUser.getId(),
+                        tweet.getId()
+                );
+
         return new TweetResponse(
                 tweet.getId(),
                 tweet.getContent(),
                 tweet.getCreatedAt(),
                 userResponse,
                 likeCount,
-                retweetCount
+                retweetCount,
+                likedByCurrentUser
         );
     }
 }

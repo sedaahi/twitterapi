@@ -3,6 +3,7 @@ package com.workintech.twitterapi.controller;
 import com.workintech.twitterapi.dto.request.TweetCreateRequest;
 import com.workintech.twitterapi.dto.response.TweetResponse;
 import com.workintech.twitterapi.dto.response.UserResponse;
+import com.workintech.twitterapi.security.JwtAuthenticationFilter;
 import com.workintech.twitterapi.service.TweetService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -22,7 +23,6 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import com.workintech.twitterapi.security.JwtAuthenticationFilter;
 
 @WebMvcTest(TweetController.class)
 
@@ -42,8 +42,7 @@ class TweetControllerTest {
     @MockitoBean
     private Authentication authentication;
 
-    // SecurityConfig bu bean'i istediği için test context'inde mock oluşturuyoruz.
-    // Filter zaten addFilters=false nedeniyle request sırasında çalışmayacak.
+    // SecurityConfig bu bean'i istediği için mock oluşturuyoruz.
     @MockitoBean
     private JwtAuthenticationFilter jwtAuthenticationFilter;
 
@@ -63,27 +62,37 @@ class TweetControllerTest {
                 LocalDateTime.now(),
                 user,
                 2L,
-                1L
+                1L,
+                true
         );
 
-        // Service sanki tweet'i bulmuş gibi davranır.
-        when(tweetService.findById(1L))
-                .thenReturn(tweet);
+        // JWT'den giriş yapan kullanıcının email'i geliyor.
+        when(authentication.getName())
+                .thenReturn("seda@example.com");
 
-        // GET isteği atılmış gibi controller'ı test ediyoruz.
+        // Service artık tweet id + current user email alıyor.
+        when(tweetService.findById(
+                1L,
+                "seda@example.com"
+        )).thenReturn(tweet);
+
         mockMvc.perform(
                         get("/tweet/findById")
                                 .param("id", "1")
+                                .principal(authentication)
                 )
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value(1))
                 .andExpect(jsonPath("$.content").value("Test tweeti"))
                 .andExpect(jsonPath("$.user.username").value("seda"))
                 .andExpect(jsonPath("$.likeCount").value(2))
-                .andExpect(jsonPath("$.retweetCount").value(1));
+                .andExpect(jsonPath("$.retweetCount").value(1))
+                .andExpect(jsonPath("$.likedByCurrentUser").value(true));
 
-        // Controller doğru service metodunu çağırmış mı?
-        verify(tweetService).findById(1L);
+        verify(tweetService).findById(
+                1L,
+                "seda@example.com"
+        );
     }
 
     @DisplayName("Can create a tweet")
@@ -105,14 +114,14 @@ class TweetControllerTest {
                 LocalDateTime.now(),
                 user,
                 0L,
-                0L
+                0L,
+                false
         );
 
         // Authentication'dan giriş yapan kullanıcının email'i gelsin.
         when(authentication.getName())
                 .thenReturn("seda@example.com");
 
-        // Service createTweet çağrıldığında örnek response dönsün.
         when(tweetService.createTweet(
                 request,
                 "seda@example.com"
@@ -132,7 +141,9 @@ class TweetControllerTest {
                 .andExpect(jsonPath("$.id").value(1))
                 .andExpect(jsonPath("$.content").value("Yeni tweet"))
                 .andExpect(jsonPath("$.user.username").value("seda"))
-                .andExpect(jsonPath("$.likeCount").value(0));
+                .andExpect(jsonPath("$.likeCount").value(0))
+                .andExpect(jsonPath("$.retweetCount").value(0))
+                .andExpect(jsonPath("$.likedByCurrentUser").value(false));
 
         verify(tweetService).createTweet(
                 request,

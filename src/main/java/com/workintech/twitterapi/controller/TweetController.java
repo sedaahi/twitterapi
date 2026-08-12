@@ -43,27 +43,36 @@ public class TweetController {
 
     @GetMapping("/findByUserId")
     public ResponseEntity<List<TweetResponse>> findByUserId(
-            @RequestParam Long userId
+            @RequestParam Long userId,
+            Authentication authentication
     ) {
         return ResponseEntity.ok(
-                tweetService.findByUserId(userId)
+                tweetService.findByUserId(
+                        userId,
+                        authentication.getName()
+                )
         );
     }
 
     @GetMapping("/findById")
     public ResponseEntity<TweetResponse> findById(
-            @RequestParam Long id
+            @RequestParam Long id,
+            Authentication authentication
     ) {
         return ResponseEntity.ok(
-                tweetService.findById(id)
+                tweetService.findById(
+                        id,
+                        authentication.getName()
+                )
         );
     }
 
     @GetMapping
-    public ResponseEntity<List<TweetResponse>> findAllTweets() {
-
+    public ResponseEntity<List<TweetResponse>> findAllTweets(
+            Authentication authentication
+    ) {
         return ResponseEntity.ok(
-                tweetService.findAllTweets()
+                tweetService.findAllTweets(authentication.getName())
         );
     }
 

@@ -8,6 +8,8 @@ public record TweetResponse(
         LocalDateTime createdAt,
         UserResponse user,
         long likeCount,
-        long retweetCount
+        long retweetCount,
+        boolean likedByCurrentUser //kullanıcı toggle like kontrolü için
+
 ) {
 }

@@ -10,13 +10,13 @@ public interface TweetService {
 
     TweetResponse createTweet(TweetCreateRequest request, String email);
 
-    List<TweetResponse> findByUserId(Long userId);
+    List<TweetResponse> findByUserId(Long userId, String email);
 
-    TweetResponse findById(Long id);
+    TweetResponse findById(Long id, String email);
 
     TweetResponse updateTweet(Long id, TweetUpdateRequest request, String email);
 
     void deleteTweet(Long id, String email);
 
-    List<TweetResponse> findAllTweets();
+    List<TweetResponse> findAllTweets(String email);
 }

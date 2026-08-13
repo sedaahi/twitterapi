@@ -63,9 +63,10 @@ class TweetControllerTest {
                 user,
                 2L,
                 1L,
-                true
+                true,
+                true,
+                10L
         );
-
         // JWT'den giriş yapan kullanıcının email'i geliyor.
         when(authentication.getName())
                 .thenReturn("seda@example.com");
@@ -87,7 +88,9 @@ class TweetControllerTest {
                 .andExpect(jsonPath("$.user.username").value("seda"))
                 .andExpect(jsonPath("$.likeCount").value(2))
                 .andExpect(jsonPath("$.retweetCount").value(1))
-                .andExpect(jsonPath("$.likedByCurrentUser").value(true));
+                .andExpect(jsonPath("$.likedByCurrentUser").value(true))
+                .andExpect(jsonPath("$.retweetedByCurrentUser").value(true))
+                .andExpect(jsonPath("$.currentUserRetweetId").value(10));
 
         verify(tweetService).findById(
                 1L,
@@ -115,7 +118,9 @@ class TweetControllerTest {
                 user,
                 0L,
                 0L,
-                false
+                false,
+                false,
+                null
         );
 
         // Authentication'dan giriş yapan kullanıcının email'i gelsin.
@@ -143,7 +148,9 @@ class TweetControllerTest {
                 .andExpect(jsonPath("$.user.username").value("seda"))
                 .andExpect(jsonPath("$.likeCount").value(0))
                 .andExpect(jsonPath("$.retweetCount").value(0))
-                .andExpect(jsonPath("$.likedByCurrentUser").value(false));
+                .andExpect(jsonPath("$.likedByCurrentUser").value(false))
+                .andExpect(jsonPath("$.retweetedByCurrentUser").value(false))
+                .andExpect(jsonPath("$.currentUserRetweetId").doesNotExist());
 
         verify(tweetService).createTweet(
                 request,

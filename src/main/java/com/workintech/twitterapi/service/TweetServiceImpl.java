@@ -173,6 +173,20 @@ public class TweetServiceImpl implements TweetService {
                         tweet.getId()
                 );
 
+        var currentUserRetweet =
+                retweetRepository.findByUserIdAndTweetId(
+                        currentUser.getId(),
+                        tweet.getId()
+                );
+
+        boolean retweetedByCurrentUser =
+                currentUserRetweet.isPresent();
+
+        Long currentUserRetweetId =
+                currentUserRetweet
+                        .map(retweet -> retweet.getId())
+                        .orElse(null);
+
         return new TweetResponse(
                 tweet.getId(),
                 tweet.getContent(),
@@ -180,7 +194,9 @@ public class TweetServiceImpl implements TweetService {
                 userResponse,
                 likeCount,
                 retweetCount,
-                likedByCurrentUser
+                likedByCurrentUser,
+                retweetedByCurrentUser,
+                currentUserRetweetId
         );
     }
 }

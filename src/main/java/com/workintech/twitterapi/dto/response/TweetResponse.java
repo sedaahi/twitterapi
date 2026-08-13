@@ -9,7 +9,9 @@ public record TweetResponse(
         UserResponse user,
         long likeCount,
         long retweetCount,
-        boolean likedByCurrentUser //kullanıcı toggle like kontrolü için
+        boolean likedByCurrentUser, //kullanıcı toggle like kontrolü için
+        boolean retweetedByCurrentUser,
+        Long currentUserRetweetId
 
 ) {
 }

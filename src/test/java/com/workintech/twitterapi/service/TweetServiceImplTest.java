@@ -19,8 +19,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
@@ -76,6 +75,9 @@ class TweetServiceImplTest {
         when(retweetRepository.countByTweetId(1L))
                 .thenReturn(0L);
 
+        when(retweetRepository.findByUserIdAndTweetId(1L, 1L))
+                .thenReturn(Optional.empty());
+
         TweetResponse response =
                 tweetService.createTweet(
                         request,
@@ -87,6 +89,10 @@ class TweetServiceImplTest {
         assertEquals("seda", response.user().username());
         assertEquals(0L, response.likeCount());
         assertEquals(0L, response.retweetCount());
+
+        assertFalse(response.likedByCurrentUser());
+        assertFalse(response.retweetedByCurrentUser());
+        assertNull(response.currentUserRetweetId());
 
         // Tweet gerçekten save edilmeye çalışılmış mı?
         verify(tweetRepository).save(any(Tweet.class));

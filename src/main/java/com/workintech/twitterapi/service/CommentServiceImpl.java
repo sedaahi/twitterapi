@@ -13,6 +13,8 @@ import com.workintech.twitterapi.repository.UserRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class CommentServiceImpl implements CommentService {
 
@@ -54,6 +56,24 @@ public class CommentServiceImpl implements CommentService {
         Comment savedComment = commentRepository.save(comment);
 
         return toResponse(savedComment);
+    }
+
+    @Override
+    public List<CommentResponse> findByTweetId(Long tweetId) {
+
+        // Önce tweet gerçekten var mı kontrol ediyoruz.
+        if (!tweetRepository.existsById(tweetId)) {
+            throw new TwitterException(
+                    "Tweet bulunamadı.",
+                    HttpStatus.NOT_FOUND
+            );
+        }
+
+        return commentRepository
+                .findByTweetIdOrderByCreatedAtAsc(tweetId)
+                .stream()
+                .map(this::toResponse)
+                .toList();
     }
 
     @Override

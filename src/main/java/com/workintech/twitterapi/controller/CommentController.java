@@ -9,6 +9,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/comment")
 public class CommentController {
@@ -36,6 +38,16 @@ public class CommentController {
                 .body(response);
     }
 
+    //tweet'in yorumlarını getir
+    @GetMapping("/tweet/{tweetId}")
+    public ResponseEntity<List<CommentResponse>> findByTweetId(
+            @PathVariable Long tweetId
+    ) {
+        return ResponseEntity.ok(
+                commentService.findByTweetId(tweetId)
+        );
+    }
+
     @PutMapping("/{id}")
     public ResponseEntity<CommentResponse> updateComment(
             @PathVariable Long id,
@@ -52,6 +64,7 @@ public class CommentController {
         );
     }
 
+    //yorum sahibi veya tweet sahibi siler
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteComment(
             @PathVariable Long id,

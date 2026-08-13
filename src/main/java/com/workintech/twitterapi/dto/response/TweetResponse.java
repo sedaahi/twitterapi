@@ -7,6 +7,7 @@ public record TweetResponse(
         String content,
         LocalDateTime createdAt,
         UserResponse user,
+        long commentCount,
         long likeCount,
         long retweetCount,
         boolean likedByCurrentUser, //kullanıcı toggle like kontrolü için

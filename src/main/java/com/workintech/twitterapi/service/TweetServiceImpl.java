@@ -7,10 +7,7 @@ import com.workintech.twitterapi.dto.response.UserResponse;
 import com.workintech.twitterapi.entity.Tweet;
 import com.workintech.twitterapi.entity.User;
 import com.workintech.twitterapi.exception.TwitterException;
-import com.workintech.twitterapi.repository.LikeRepository;
-import com.workintech.twitterapi.repository.RetweetRepository;
-import com.workintech.twitterapi.repository.TweetRepository;
-import com.workintech.twitterapi.repository.UserRepository;
+import com.workintech.twitterapi.repository.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
@@ -23,17 +20,20 @@ public class TweetServiceImpl implements TweetService {
     private final UserRepository userRepository;
     private final LikeRepository likeRepository;
     private final RetweetRepository retweetRepository;
+    private final CommentRepository commentRepository;
 
     public TweetServiceImpl(
             TweetRepository tweetRepository,
             UserRepository userRepository,
             LikeRepository likeRepository,
-            RetweetRepository retweetRepository
+            RetweetRepository retweetRepository,
+            CommentRepository commentRepository
     ) {
         this.tweetRepository = tweetRepository;
         this.userRepository = userRepository;
         this.likeRepository = likeRepository;
         this.retweetRepository = retweetRepository;
+        this.commentRepository = commentRepository;
     }
 
     @Override
@@ -159,6 +159,9 @@ public class TweetServiceImpl implements TweetService {
                 tweet.getUser().getEmail()
         );
 
+        long commentCount =
+                commentRepository.countByTweetId(tweet.getId());
+
         long likeCount =
                 likeRepository.countByTweetId(tweet.getId());
 
@@ -192,6 +195,7 @@ public class TweetServiceImpl implements TweetService {
                 tweet.getContent(),
                 tweet.getCreatedAt(),
                 userResponse,
+                commentCount,
                 likeCount,
                 retweetCount,
                 likedByCurrentUser,

@@ -3,6 +3,7 @@ package com.workintech.twitterapi.controller;
 import com.workintech.twitterapi.dto.request.CommentRequest;
 import com.workintech.twitterapi.dto.response.CommentResponse;
 import com.workintech.twitterapi.service.CommentService;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -13,11 +14,14 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/comment")
+@SecurityRequirement(name = "bearerAuth")
 public class CommentController {
 
     private final CommentService commentService;
 
-    public CommentController(CommentService commentService) {
+    public CommentController(
+            CommentService commentService
+    ) {
         this.commentService = commentService;
     }
 
@@ -30,7 +34,7 @@ public class CommentController {
         CommentResponse response =
                 commentService.createComment(
                         request,
-                        authentication.getName() //commit sahibi tokendan alınıyor bize örn seda@example.com veriyor
+                        authentication.getName()
                 );
 
         return ResponseEntity
@@ -38,13 +42,25 @@ public class CommentController {
                 .body(response);
     }
 
-    //tweet'in yorumlarını getir
+    // Bir tweet'e ait yorumları getirir.
     @GetMapping("/tweet/{tweetId}")
     public ResponseEntity<List<CommentResponse>> findByTweetId(
             @PathVariable Long tweetId
     ) {
+
         return ResponseEntity.ok(
                 commentService.findByTweetId(tweetId)
+        );
+    }
+
+    // Bir kullanıcının yaptığı yorumları getirir.
+    @GetMapping("/user/{userId}")
+    public ResponseEntity<List<CommentResponse>> findByUserId(
+            @PathVariable Long userId
+    ) {
+
+        return ResponseEntity.ok(
+                commentService.findByUserId(userId)
         );
     }
 
@@ -64,7 +80,7 @@ public class CommentController {
         );
     }
 
-    //yorum sahibi veya tweet sahibi siler
+    // Yorum sahibi veya tweet sahibi silebilir.
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteComment(
             @PathVariable Long id,
@@ -76,6 +92,8 @@ public class CommentController {
                 authentication.getName()
         );
 
-        return ResponseEntity.noContent().build();
+        return ResponseEntity
+                .noContent()
+                .build();
     }
 }

@@ -7,9 +7,14 @@ import java.util.List;
 
 public interface CommentService {
 
-    CommentResponse createComment(CommentRequest request, String email);
+    CommentResponse createComment(
+            CommentRequest request,
+            String email
+    );
 
     List<CommentResponse> findByTweetId(Long tweetId);
+
+    List<CommentResponse> findByUserId(Long userId);
 
     CommentResponse updateComment(
             Long id,

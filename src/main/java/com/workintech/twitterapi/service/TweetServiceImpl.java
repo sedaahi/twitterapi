@@ -69,7 +69,28 @@ public class TweetServiceImpl implements TweetService {
                 .map(tweet -> toResponse(tweet, email))
                 .toList();
     }
+    @Override
+    public List<TweetResponse> findLikedTweetsByUserId(
+            Long userId,
+            String email
+    ) {
 
+        if (!userRepository.existsById(userId)) {
+            throw new TwitterException(
+                    "Kullanıcı bulunamadı.",
+                    HttpStatus.NOT_FOUND
+            );
+        }
+
+        return likeRepository
+                .findByUserIdOrderByIdDesc(userId)
+                .stream()
+                .map(like -> toResponse(
+                        like.getTweet(),
+                        email
+                ))
+                .toList();
+    }
     @Override
     public TweetResponse findById(
             Long id,

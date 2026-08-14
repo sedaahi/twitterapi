@@ -19,4 +19,9 @@ public interface TweetService {
     void deleteTweet(Long id, String email);
 
     List<TweetResponse> findAllTweets(String email);
+
+    List<TweetResponse> findLikedTweetsByUserId(
+            Long userId,
+            String email
+    );
 }

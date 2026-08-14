@@ -5,10 +5,7 @@ import com.workintech.twitterapi.dto.response.TweetResponse;
 import com.workintech.twitterapi.entity.Tweet;
 import com.workintech.twitterapi.entity.User;
 import com.workintech.twitterapi.exception.TwitterException;
-import com.workintech.twitterapi.repository.LikeRepository;
-import com.workintech.twitterapi.repository.RetweetRepository;
-import com.workintech.twitterapi.repository.TweetRepository;
-import com.workintech.twitterapi.repository.UserRepository;
+import com.workintech.twitterapi.repository.*;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -39,7 +36,9 @@ class TweetServiceImplTest {
     @Mock
     private RetweetRepository retweetRepository;
 
-    // Mock repository'ler TweetServiceImpl içine otomatik verilir.
+    @Mock
+    private CommentRepository commentRepository;
+
     @InjectMocks
     private TweetServiceImpl tweetService;
 
@@ -69,6 +68,9 @@ class TweetServiceImplTest {
                 });
 
         // Yeni tweet'in henüz like ve retweet'i yok.
+        when(commentRepository.countByTweetId(1L))
+                .thenReturn(0L);
+
         when(likeRepository.countByTweetId(1L))
                 .thenReturn(0L);
 
@@ -87,6 +89,7 @@ class TweetServiceImplTest {
         assertEquals(1L, response.id());
         assertEquals("Test tweeti", response.content());
         assertEquals("seda", response.user().username());
+        assertEquals(0L, response.commentCount());
         assertEquals(0L, response.likeCount());
         assertEquals(0L, response.retweetCount());
 

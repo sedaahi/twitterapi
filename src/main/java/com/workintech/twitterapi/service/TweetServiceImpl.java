@@ -10,6 +10,7 @@ import com.workintech.twitterapi.exception.TwitterException;
 import com.workintech.twitterapi.repository.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -98,14 +99,19 @@ public class TweetServiceImpl implements TweetService {
         return toResponse(updatedTweet, email);
     }
 
+    @Transactional //sayesinde de örneğin retweet silinirken bir hata olursa önceki comment/like silmeleri commit edilmez; tamamı geri alınır
     @Override
     public void deleteTweet(Long id, String email) {
 
         Tweet tweet = findTweetById(id);
 
-        validateTweetOwner(tweet, email);
+        validateTweetOwner(tweet, email); //owner kontrolü
 
-        tweetRepository.delete(tweet);
+        commentRepository.deleteByTweetId(id); //comment kayıtları silinir
+        likeRepository.deleteByTweetId(id); //like kayıtları silinir
+        retweetRepository.deleteByTweetId(id); //retweet kayıtları silinir
+
+        tweetRepository.delete(tweet);//tweet silinir
     }
 
     @Override

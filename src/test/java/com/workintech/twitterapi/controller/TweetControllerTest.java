@@ -62,6 +62,7 @@ class TweetControllerTest {
                 LocalDateTime.now(),
                 user,
                 2L,
+                2L,
                 1L,
                 true,
                 true,
@@ -116,11 +117,12 @@ class TweetControllerTest {
                 "Yeni tweet",
                 LocalDateTime.now(),
                 user,
-                0L,
-                0L,
-                false,
-                false,
-                null
+                0L,     // commentCount
+                0L,     // likeCount
+                0L,     // retweetCount
+                false,  // likedByCurrentUser
+                false,  // retweetedByCurrentUser
+                null    // currentUserRetweetId
         );
 
         // Authentication'dan giriş yapan kullanıcının email'i gelsin.
@@ -146,6 +148,7 @@ class TweetControllerTest {
                 .andExpect(jsonPath("$.id").value(1))
                 .andExpect(jsonPath("$.content").value("Yeni tweet"))
                 .andExpect(jsonPath("$.user.username").value("seda"))
+                .andExpect(jsonPath("$.commentCount").value(0))
                 .andExpect(jsonPath("$.likeCount").value(0))
                 .andExpect(jsonPath("$.retweetCount").value(0))
                 .andExpect(jsonPath("$.likedByCurrentUser").value(false))

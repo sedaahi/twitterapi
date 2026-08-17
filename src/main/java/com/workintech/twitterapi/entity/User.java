@@ -33,31 +33,3 @@ public class User {
     @Column(nullable = false)
     private String password;
 }
-
-
-
-/*
-
-                    ┌─────────────┐
-                    │    USER     │
-                    │-------------│
-                    │ id          │
-                    │ username    │
-                    │ email       │
-                    │ password    │
-                    └──────┬──────┘
-                           │
-           ┌───────────────┼──────────────┐
-           │               │              │
-           ▼               ▼              ▼
-        TWEET           COMMENT          LIKE
-           │               │              │
-           │               │              │
-           ├───────────────┘              │
-           │                              │
-           ├──────────────────────────────┘
-           │
-           ▼
-        RETWEET
-
- */

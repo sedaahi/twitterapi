@@ -11,8 +11,8 @@ public record TweetResponse(
         long likeCount,
         long retweetCount,
         boolean likedByCurrentUser, //kullanıcı toggle like kontrolü için
-        boolean retweetedByCurrentUser,
-        Long currentUserRetweetId
+        boolean retweetedByCurrentUser, //Bu tweet'i ben retweet ettim mi T/F ?  ==> Ettiğim retweet'in DB kaydının ID'si ne?=> currentUserRetweetId
+        Long currentUserRetweetId //retweet geri alınırken => DELETE işlemi için
 
 ) {
 }

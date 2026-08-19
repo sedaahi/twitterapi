@@ -1,7 +1,6 @@
 package com.workintech.twitterapi.controller;
 
 import com.workintech.twitterapi.dto.request.TweetCreateRequest;
-import com.workintech.twitterapi.dto.request.TweetUpdateRequest;
 import com.workintech.twitterapi.dto.response.TweetResponse;
 import com.workintech.twitterapi.service.TweetService;
 import jakarta.validation.Valid;
@@ -28,12 +27,12 @@ public class TweetController {
     @PostMapping
     public ResponseEntity<TweetResponse> createTweet(
             @Valid @RequestBody TweetCreateRequest request,
-            Authentication authentication
+            Authentication authentication //kullanıcı kim bilgisini frontend’den almak güvenli değil; kullanıcı manipüle edebilir. Biz kullanıcıyı JWT’den alıyoruz
     ) {
 
         TweetResponse response = tweetService.createTweet(
                 request,
-                authentication.getName()
+                authentication.getName() //JWT ile doğrulanmış current user email
         );
 
         return ResponseEntity
@@ -79,7 +78,7 @@ public class TweetController {
     @PutMapping("/{id}")
     public ResponseEntity<TweetResponse> updateTweet(
             @PathVariable Long id,
-            @Valid @RequestBody TweetUpdateRequest request,
+            @Valid @RequestBody TweetCreateRequest request,
             Authentication authentication
     ) {
         return ResponseEntity.ok(

@@ -30,57 +30,82 @@
 		<java.version>21</java.version>
 	</properties>
 	<dependencies>
+
+		<!-- Database / ORM: Veritabanı işlemleri ve JPA/Hibernate desteği -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-data-jpa</artifactId>
 		</dependency>
+
+		<!-- Validation: DTO ve Entity model veri doğrulama işlemleri (@NotNull, @Size vb.) -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-validation</artifactId>
 		</dependency>
+
+		<!-- Web REST API: RESTful web servisleri ve MVC mimarisi desteği -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-webmvc</artifactId>
 		</dependency>
 
+		<!-- Geliştirici Araçları: Otomatik yeniden başlatma ve canlı yükleme (Hot Reload) -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-devtools</artifactId>
 			<scope>runtime</scope>
 			<optional>true</optional>
 		</dependency>
+
+		<!-- PostgreSQL Sürücüsü: PostgreSQL veritabanına bağlanmak için JDBC sürücüsü -->
 		<dependency>
 			<groupId>org.postgresql</groupId>
 			<artifactId>postgresql</artifactId>
 			<scope>runtime</scope>
 		</dependency>
+
+		<!-- Lombok: Getter, Setter, Constructor vb. boilerplate kodları azaltan kütüphane -->
 		<dependency>
 			<groupId>org.projectlombok</groupId>
 			<artifactId>lombok</artifactId>
 			<optional>true</optional>
 		</dependency>
+
+		<!-- Test - JPA: Veri erişim katmanı ve veritabanı sorguları için test araçları -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-data-jpa-test</artifactId>
 			<scope>test</scope>
 		</dependency>
+
+		<!-- Test - Validation: Veri doğrulama kurallarını test etmek için araçlar -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-validation-test</artifactId>
 			<scope>test</scope>
 		</dependency>
+
+		<!-- Test - Web MVC: Controller katmanı ve REST API uç noktaları için test araçları -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-webmvc-test</artifactId>
 			<scope>test</scope>
 		</dependency>
-		<!-- JWT -->
+
+		<!-- Security & Authentication: Uygulama güvenliği, yetkilendirme ve kimlik doğrulama -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-security</artifactId>
+		</dependency>
+
+		<!-- JWT: Token oluşturma ve doğrulama işlemleri için arayüz (API) -->
 		<dependency>
 			<groupId>io.jsonwebtoken</groupId>
 			<artifactId>jjwt-api</artifactId>
 			<version>0.12.7</version>
 		</dependency>
 
+		<!-- JWT Impl: JWT işlemlerinin çalışma zamanı (Runtime) mantık uygulaması -->
 		<dependency>
 			<groupId>io.jsonwebtoken</groupId>
 			<artifactId>jjwt-impl</artifactId>
@@ -88,6 +113,7 @@
 			<scope>runtime</scope>
 		</dependency>
 
+		<!-- JWT Jackson: JWT payload verisini JSON'a dönüştürme/çözme entegrasyonu -->
 		<dependency>
 			<groupId>io.jsonwebtoken</groupId>
 			<artifactId>jjwt-jackson</artifactId>
@@ -95,17 +121,13 @@
 			<scope>runtime</scope>
 		</dependency>
 
-		<!-- Swagger / OpenAPI -->
+		<!-- Swagger / OpenAPI: Interaktif API dokümantasyonu ve arayüzü (Swagger UI) -->
 		<dependency>
 			<groupId>org.springdoc</groupId>
 			<artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
 			<version>3.1.0</version>
 		</dependency>
 
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-security</artifactId>
-		</dependency>
 	</dependencies>
 
 	<build>

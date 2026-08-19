@@ -84,10 +84,16 @@ public class AuthServiceImpl implements AuthService {
     @Override
     public AuthResponse login(LoginRequest request) {
 
-        //Bu email ve password doğru mu?
-        //CustomUserDetailsService->findByEmail->DB'deki hash password->PasswordEncoder karşılatır==>
+        /**
+         * authenticationManager=>
+         * email + password
+         *       ↓
+         * AuthenticationManager
+         *       ↓
+         * Spring Security doğrulasın=> CustomUserDetailsService (Bu email'e sahip kullanıcı kim?)=>
+         */
         authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(
+                new UsernamePasswordAuthenticationToken( //Bu email ve password ile login olmak isteyen biri var
                         request.email(),
                         request.password()
                 )

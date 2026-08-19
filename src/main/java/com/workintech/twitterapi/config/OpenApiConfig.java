@@ -14,6 +14,7 @@ import org.springframework.context.annotation.Configuration;
                 description = "Twitter clone backend API built with Spring Boot, PostgreSQL, JWT and Spring Security."
         )
 )
+//Swagger’daki Authorize butonuna JWT verip protected endpointleri testi için
 @SecurityScheme(
         name = "bearerAuth",
         type = SecuritySchemeType.HTTP,

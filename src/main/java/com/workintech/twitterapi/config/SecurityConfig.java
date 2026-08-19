@@ -50,10 +50,7 @@ public class SecurityConfig {
                                 "/swagger-ui/**",
                                 "/swagger-ui.html",
                                 "/v3/api-docs/**"
-                        ).permitAll() //kullanıcı daha JWT sahibi değilken register ve login'e erişebilmek zorunda.
-
-                        // Swagger endpointleri
-                        //Swagger da JWT olmadan açılabilmeli
+                        ).permitAll() //kullanıcı token sahibi değilken register ve login'e erişebilmek zorunda.
 
                         // Bunların dışındaki endpointler login gerektirir
                         .anyRequest().authenticated()

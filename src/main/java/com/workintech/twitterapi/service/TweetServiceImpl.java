@@ -1,7 +1,6 @@
 package com.workintech.twitterapi.service;
 
 import com.workintech.twitterapi.dto.request.TweetCreateRequest;
-import com.workintech.twitterapi.dto.request.TweetUpdateRequest;
 import com.workintech.twitterapi.dto.response.TweetResponse;
 import com.workintech.twitterapi.dto.response.UserResponse;
 import com.workintech.twitterapi.entity.Tweet;
@@ -40,7 +39,7 @@ public class TweetServiceImpl implements TweetService {
     @Override
     public TweetResponse createTweet(TweetCreateRequest request, String email) {
 
-        User user = findUserByEmail(email);
+        User user = findUserByEmail(email); //JWT’den gelen email ile gerçek kullanıcıyı DB’den bul
 
         Tweet tweet = new Tweet();
         tweet.setContent(request.content());
@@ -48,7 +47,7 @@ public class TweetServiceImpl implements TweetService {
 
         Tweet savedTweet = tweetRepository.save(tweet);
 
-        return toResponse(savedTweet, email);
+        return toResponse(savedTweet, email); //entity’yi direkt dönmek yerine TweetResponse oluştur
     }
 
     @Override
@@ -105,7 +104,7 @@ public class TweetServiceImpl implements TweetService {
     @Override
     public TweetResponse updateTweet(
             Long id,
-            TweetUpdateRequest request,
+            TweetCreateRequest request,
             String email
     ) {
 
@@ -180,43 +179,44 @@ public class TweetServiceImpl implements TweetService {
             String email
     ) {
 
+        // Tweet sahibini UserResponse DTO'suna çevir
         UserResponse userResponse = new UserResponse(
                 tweet.getUser().getId(),
                 tweet.getUser().getUsername(),
                 tweet.getUser().getEmail()
         );
 
-        long commentCount =
-                commentRepository.countByTweetId(tweet.getId());
+        // Tweetin toplam comment/like/rt sayıları
+        long commentCount = commentRepository.countByTweetId(tweet.getId());
 
-        long likeCount =
-                likeRepository.countByTweetId(tweet.getId());
+        long likeCount = likeRepository.countByTweetId(tweet.getId());
 
-        long retweetCount =
-                retweetRepository.countByTweetId(tweet.getId());
+        long retweetCount = retweetRepository.countByTweetId(tweet.getId());
 
+        // JWT'den gelen email ile giriş yapan kullanıcıyı bul
         User currentUser = findUserByEmail(email);
 
-        boolean likedByCurrentUser =
-                likeRepository.existsByUserIdAndTweetId(
-                        currentUser.getId(),
-                        tweet.getId()
-                );
+        // Giriş yapan kullanıcı bu tweeti beğenmiş mi?==>Kalp ikonunun dolu/boş görünmesi
+        boolean likedByCurrentUser = likeRepository.existsByUserIdAndTweetId(
+                currentUser.getId(),
+                tweet.getId()
+        );
 
-        var currentUserRetweet =
-                retweetRepository.findByUserIdAndTweetId(
-                        currentUser.getId(),
-                        tweet.getId()
-                );
+        // Giriş yapan kullanıcının bu tweet için retweet kaydını bul ==>Kullanıcının bu tweeti retweet edip etmediği
+        var currentUserRetweet = retweetRepository.findByUserIdAndTweetId(
+                currentUser.getId(),
+                tweet.getId()
+        );
 
-        boolean retweetedByCurrentUser =
-                currentUserRetweet.isPresent();
+        // Tweet retweet edilmiş mi? Retweet ikonunun aktif olup olmayacağı
+        boolean retweetedByCurrentUser = currentUserRetweet.isPresent();
 
-        Long currentUserRetweetId =
-                currentUserRetweet
-                        .map(retweet -> retweet.getId())
-                        .orElse(null);
+        // Varsa retweet kaydının id'sini al (undo retweet için)
+        Long currentUserRetweetId = currentUserRetweet
+                .map(retweet -> retweet.getId())
+                .orElse(null);
 
+        // Frontend'e dönecek TweetResponse DTO'sunu oluştur
         return new TweetResponse(
                 tweet.getId(),
                 tweet.getContent(),
